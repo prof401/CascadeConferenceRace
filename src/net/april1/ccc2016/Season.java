@@ -37,7 +37,13 @@ public class Season {
 	public void loadResults() {
 		String[][] stringResults={
 				{"NW","WPAC","3","0"},{"ESC","EOU","0","2"},{"CORB","UGF","2","1"},{"NCU","CC","0","1"}, //Sept 16
-				{"NW","EOU","0","1"},{"ESC","WPAC","0","0"},{"CORB","CC","1","2"},{"NCU","UGF","3","0"},{"RMC","CI","2","1"} //Sept 17
+				{"NW","EOU","0","1"},{"ESC","WPAC","0","0"},{"CORB","CC","1","2"},{"NCU","UGF","3","0"},{"RMC","CI","2","1"}, //Sept 17
+				{"CC","EOU","0","0"}, //Sept 22
+				{"SOU","CORB","5","0"},{"CC","WPAC","2","0"},{"UGF","EOU","0","1"},{"OIT","NCU","1","1"}, //Sept 23
+				{"SOU","NCU","2","0"},{"UGF","WPAC","1","3"},{"OIT","CORB","1","2"}, {"NW","ESC","2","0"},//Sept 24
+				{"RMC","UGF","0","1"},{"EOU","OIT","4","0"},{"WPAC","SOU","0","2"},{"CI","CC","0","1"}, //Sept 30
+				{"CORB","NCU","4","0"},{"EOU","SOU","0","1"},{"WPAC","OIT","3","1"}, //Oct 1
+				{"CI","UGF","1","2"},{"RMC","CC","0","4"} //Oct 2
 		};
 		
 		for(String[] stringResult : stringResults) {
