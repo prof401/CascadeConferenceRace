@@ -2,6 +2,7 @@ package net.april1.ccc2016;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Season {
 	static final private int RESULTS = 3;
@@ -56,6 +57,25 @@ public class Season {
 		}
 	}
 
+	public void loseRest(String team) {
+		for(Entry<Game, Result> gameEntry : season.entrySet()) {
+			String homeTeam = gameEntry.getKey().getHome().toString();
+			String awayTeam = gameEntry.getKey().getAway().toString();
+			if(awayTeam.equals(team) || homeTeam.equals(team)) {
+			//team is either Away or Home team
+				if (gameEntry.getValue()==null) {
+					//game not played yet
+					Result newResult = null;
+					if ((awayTeam.equals(team)))
+						newResult = new Result("3","0");
+					else 
+						newResult = new Result("0","3");
+					season.put(gameEntry.getKey(), newResult);			
+				}		
+			}
+		}
+	}
+	
 	public void future() {
 		Map<Game, Result> futureSeason = new java.util.HashMap<Game, Result>(season);
 		List<Game> noResultGames = new java.util.ArrayList<Game>();
@@ -65,6 +85,7 @@ public class Season {
 			}
 		}
 		int fgLast = noResultGames.size() - 1;
+		System.out.println(fgLast);
 		int[] fg = new int[fgLast + 1];
 		int z = 0;
 		while (fg[0] != RESULTS) {
@@ -83,12 +104,14 @@ public class Season {
 		for (Team t : table.sortedTable()) {
 			System.out.println(t.name());
 		}
+		table.print();
 	}
 
 	static final public void main(String[] args) {
 		Season current = new Season();
 		current.loadSchedule();
 		current.loadResults();
+		current.loseRest("CC");
 		current.printStandings();
 		current.future();
 	}
