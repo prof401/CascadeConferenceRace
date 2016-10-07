@@ -15,11 +15,11 @@ public class Standings {
 		private int gsTotal = 0;
 		private int gaTotal = 0;
 		private int gdTotal = 0;
-		private int[] goalsScored = new int[Team.values().length];
+		private int[] winValue = new int[Team.values().length];
 
 		public TableEntry() {
 			for (int i=0;i<Team.values().length;i++) {
-				goalsScored[i] = -1;
+				winValue[i] = -1;
 			}
 		}
 		
@@ -33,7 +33,7 @@ public class Standings {
 					points += 0;
 				}
 			}
-			goalsScored[opponent.ordinal()] = gs;
+			winValue[opponent.ordinal()] = (gs>ga ? 2 : (gs==ga ? 1 : 0));
 			gsTotal += gs;
 			gaTotal += ga;
 			gdTotal += Math.min(Math.max(-3, gs-ga),3);
@@ -56,23 +56,20 @@ public class Standings {
 		}
 
 		public int getGoalsScored(Team opponent) {
-			return goalsScored[opponent.ordinal()];
+			return winValue[opponent.ordinal()];
 		}
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			sb.append(points);
-			sb.append(' ');
-			sb.append(gaTotal);
-			sb.append(' ');
-			sb.append(gdTotal);
-			sb.append(' ');
-			sb.append(gsTotal);
-			sb.append(' ');
-			for(int gs : goalsScored) {
-				sb.append(gs);
-				sb.append(' ');
+
+			sb.append(String.format("%3d ", points));
+			sb.append(String.format("%3d ", gaTotal));
+			sb.append(String.format("%3d ", gdTotal));
+			sb.append(String.format("%3d ", gsTotal));
+			for(int gs : winValue) {
+				sb.append(String.format("%4d ", gs));
 			}
+
 			return sb.toString();
 		}
 	}
@@ -157,9 +154,11 @@ public class Standings {
 	}
 
 	public void print() {
+		System.out.print("TEAM Pts  GA  GD  GS ");
+		for(Team team : Team.values()) System.out.printf("%4s ", team.toString());
+		System.out.println();
 		for (Team team : sortedTable()) {
-			System.out.print(team.toString());
-			System.out.print(' ');
+			System.out.printf("%4s ", team.toString());
 			System.out.print(table.get(team));
 			System.out.println();
 		}

@@ -1,11 +1,9 @@
 package net.april1.ccc2016;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class Season {
-	static final private int RESULTS = 3;
 	private Map<Game, Result> season;
 
 	public void loadSchedule() {
@@ -47,7 +45,9 @@ public class Season {
 				{"SOU","NCU","2","0"},{"UGF","WPAC","1","3"},{"OIT","CORB","1","2"}, {"NW","ESC","2","0"},//Sept 24
 				{"RMC","UGF","0","1"},{"EOU","OIT","4","0"},{"WPAC","SOU","0","2"},{"CI","CC","0","1"}, //Sept 30
 				{"CORB","NCU","4","0"},{"EOU","SOU","0","1"},{"WPAC","OIT","3","1"}, //Oct 1
-				{"CI","UGF","1","2"},{"RMC","CC","0","4"} //Oct 2
+				{"CI","UGF","1","2"},{"RMC","CC","0","4"}, 
+				{"OIT","NW","1","3"}, {"CI","CORB","1","2"}, {"RMC","NCU","3","2"}, // 10-7
+				{ "UGF", "CC","0","1" } //Oct 8
 		};
 
 		for (String[] stringResult : stringResults) {
@@ -76,28 +76,84 @@ public class Season {
 		}
 	}
 	
-	public void future() {
-		Map<Game, Result> futureSeason = new java.util.HashMap<Game, Result>(season);
-		List<Game> noResultGames = new java.util.ArrayList<Game>();
-		for (Game game : futureSeason.keySet()) {
-			if (futureSeason.get(game) == null) {
-				noResultGames.add(game);
+	public void winRest(Team team) {
+		for(Entry<Game, Result> gameEntry : season.entrySet()) {
+			Team homeTeam = gameEntry.getKey().getHome();
+			Team awayTeam = gameEntry.getKey().getAway();
+			if(awayTeam.equals(team) || homeTeam.equals(team)) {
+			//team is either Away or Home team
+				if (gameEntry.getValue()==null) {
+					//game not played yet
+					Result newResult = null;
+					if ((awayTeam.equals(team)))
+						newResult = new Result("0","1");
+					else 
+						newResult = new Result("1","0");
+					season.put(gameEntry.getKey(), newResult);			
+				}		
 			}
 		}
-		int fgLast = noResultGames.size() - 1;
-		System.out.println(fgLast);
-		int[] fg = new int[fgLast + 1];
-		int z = 0;
-		while (fg[0] != RESULTS) {
-			if (++z%100000000==0) System.out.println(z);
-			fg[fgLast]++;
-			int count = fgLast;
-			while (fg[count] > (RESULTS - 1) && count > 0) {
-				fg[count] = 0;
-				fg[--count] += 1;
-			}
+	}
+	
+	static public void winPermenutations() {
+		int count = 0;
+		int[] placeCount = new int[Team.values().length];
+		int lowest=0;
+		long start = System.currentTimeMillis();
+		String lowestOrder = "";
+	   	TeamPermutations pg = new TeamPermutations();
+		Season current = new Season();
+		StringBuilder order = new StringBuilder();
+        while (pg.hasMore()) {
+    		current.loadSchedule();
+    		current.loadResults();
+    		order.setLength(0);
+            int[] temp =  pg.getNext();
+            for (int i = 0; i < temp.length; i++) {
+            	current.winRest(Team.values()[temp[i]]);
+                order.append(' ');
+                order.append(Team.values()[temp[i]].toString());
+            }
+            int carrollPlace =current.place(Team.CC);
+            placeCount[carrollPlace]++;
+            
+            if (lowest<carrollPlace) {
+            	lowest = carrollPlace;
+            	lowestOrder = order.toString();
+            }
+            if (++count%3628800==0) {
+                for(int cnt : placeCount) {
+                	System.out.printf("%5.1f ",(100.0*cnt)/count);
+                }
+                System.out.printf("%9d %9d %9d ", placeCount[0], placeCount[8]+placeCount[9]+placeCount[10]+placeCount[11], count);
+            	System.out.println((System.currentTimeMillis()-start)/1000);
+            }
+            
+        }
+        for(int cnt : placeCount) {
+        	System.out.print(cnt);
+        	System.out.print(' ');
+        }
+        System.out.println(count);
+        for(int cnt : placeCount) {
+        	System.out.printf("%5.1f ",(100.0*cnt)/count);
+        }
+    	System.out.println((System.currentTimeMillis()-start)/1000);
+        System.out.println("Lowest place " + (lowest+1));
+        System.out.println(lowestOrder);
+	}
+	
+	public int place(Team team) {
+		Standings table = new Standings(season);
+		int place = 0;
+		for (Team t : table.sortedTable()) {
+			if (t.equals(team))
+				break;
+			else 
+				place++;
 		}
-	};
+		return place;
+	}
 
 	public void printStandings() {
 		Standings table = new Standings(season);
@@ -107,12 +163,29 @@ public class Season {
 		table.print();
 	}
 
-	static final public void main(String[] args) {
+	public static void test() {
+		long start = System.currentTimeMillis();
 		Season current = new Season();
 		current.loadSchedule();
 		current.loadResults();
-		current.loseRest("CC");
+		current.winRest(Team.CI);
+		current.winRest(Team.ESC);
+		current.winRest(Team.RMC);
+		current.winRest(Team.CORB);
+		current.winRest(Team.EOU);
+		current.winRest(Team.NW);
+		current.winRest(Team.NCU);
+		current.winRest(Team.SOU);
+		current.winRest(Team.UGF);
+		current.winRest(Team.OIT);
+		current.winRest(Team.WPAC);
 		current.printStandings();
-		current.future();
+		System.out.println(current.place(Team.CC));
+		System.out.println(System.currentTimeMillis()-start);	
+	}
+	
+	static final public void main(String[] args) {
+		Season.test();
+		Season.winPermenutations();
 	}
 }
