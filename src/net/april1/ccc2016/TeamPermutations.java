@@ -4,13 +4,15 @@ public class TeamPermutations {
     private int[] array;
     private int firstNum;
     private boolean firstReady = false;
+    private static final int START = 0;
+    private static final int SIZE = 12;
  
     public TeamPermutations() {
-    	int n=11;
+    	int n=SIZE;
         if (n < 1) {
             throw new IllegalArgumentException("The n must be min. 1");
         }
-        firstNum = 1;
+        firstNum = START;
         array = new int[n];
         reset();
     }
