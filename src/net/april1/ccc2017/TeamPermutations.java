@@ -1,4 +1,4 @@
-package net.april1.ccc2016;
+package net.april1.ccc2017;
 
 public class TeamPermutations {
     private int[] array;
