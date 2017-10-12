@@ -178,13 +178,13 @@ public class Season {
 			int carrollPlace = current.place(Team.CC);
 			placeCount[carrollPlace]++;
 			List<Team> standings = (new Standings(current.season)).sortedTable();
-			opponent[standings.get(12-carrollPlace).ordinal()]++;
+//			opponent[standings.get(12-carrollPlace).ordinal()]++;
 
 			if (++count % WRITE_COUNT == 0) {
-				for (int cnt : opponent) {
-					System.out.printf("%5.1f ", (100.0 * cnt) / count);
-				}
-				System.out.println();
+//				for (int cnt : opponent) {
+//					System.out.printf("%5.1f ", (100.0 * cnt) / count);
+//				}
+//				System.out.println();
 				for (int cnt : placeCount) {
 					System.out.printf("%5.1f ", (100.0 * cnt) / count);
 				}
@@ -258,7 +258,7 @@ public class Season {
 	}
 
 	static final public void main(String[] args) {
-		Season.test();
+//		Season.test();
 //		Season.winPermenutations();
 		Season.gameIteration();
 	}
