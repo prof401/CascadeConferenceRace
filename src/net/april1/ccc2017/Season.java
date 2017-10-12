@@ -104,13 +104,14 @@ public class Season {
 
 	static public void winPermenutations() {
 		int count = 0;
-		int[] placeCount = new int[Team.values().length];
+		int[] placeCount = new int[Team.values().length]; //number of teams
 		int lowest = 0;
 		long start = System.currentTimeMillis();
 		String lowestOrder = "";
 		TeamPermutations pg = new TeamPermutations();
 		Season current = new Season();
 		StringBuilder order = new StringBuilder();
+		
 		while (pg.hasMore()) {
 			current.loadSchedule();
 			current.loadResults();
@@ -124,11 +125,11 @@ public class Season {
 			int carrollPlace = current.place(Team.CC);
 			placeCount[carrollPlace]++;
 
-			if (lowest < carrollPlace) {
-				lowest = carrollPlace;
-				lowestOrder = order.toString();
-			}
-			if (++count % 39916800 == 0) {
+//			if (lowest < carrollPlace) {
+//				lowest = carrollPlace;
+//				lowestOrder = order.toString();
+//			}
+			if (++count % 39916800 == 0) { //print every so often 
 				for (int cnt : placeCount) {
 					System.out.printf("%5.1f ", (100.0 * cnt) / count);
 				}
